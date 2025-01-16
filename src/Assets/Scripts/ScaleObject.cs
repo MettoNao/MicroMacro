@@ -10,6 +10,7 @@ public class ScaleObject : MonoBehaviour
 
     public void OnScale(float addSclae)
     {
+        if (transform.localScale.magnitude < minScale) return;
         isScaleNow = true;
         transform.DOScale(transform.localScale + new Vector3(transform.localScale.x, transform.localScale.y, 0).normalized * addSclae,0.8f)
             .SetEase(Ease.OutBounce)
@@ -23,7 +24,7 @@ public class ScaleObject : MonoBehaviour
         if (collision.gameObject.CompareTag("Player"))
         {
             var dir = collision.transform.position - transform.position;
-            collision.gameObject.GetComponent<PlayerController>().AddJump(SnapToClosestDirection(dir), 40);
+            collision.gameObject.GetComponent<PlayerController>().AddJump(SnapToClosestDirection(dir), 50);
             isScaleNow = false;
         }
     }

@@ -7,6 +7,7 @@ TagManager:
   - Ground
   - Bullet
   - ScaleObject
+  - Enemy
   layers:
   - Default
   - TransparentFX

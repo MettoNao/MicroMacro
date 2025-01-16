@@ -11,7 +11,13 @@ public class Bullet : MonoBehaviour
         if (collision.gameObject.CompareTag("ScaleObject"))
         {
             collision.gameObject.GetComponent<ScaleObject>().OnScale(scalePower);
-            Destroy(gameObject);
         }
+
+        if (collision.gameObject.CompareTag("Enemy"))
+        {
+            collision.gameObject.GetComponent<Enemy>().OnScale(scalePower);
+        }
+
+        Destroy(gameObject);
     }
 }

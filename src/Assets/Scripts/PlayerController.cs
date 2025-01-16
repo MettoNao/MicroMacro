@@ -2,6 +2,8 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
+using TMPro;
 
 public class PlayerController : MonoBehaviour
 {
@@ -12,6 +14,9 @@ public class PlayerController : MonoBehaviour
 
     [Header("Shooting Settings")]
     public GameObject bulletPrefab;
+    public GameObject miniBulletPrefab;
+    [SerializeField] private Image bulletState;
+    [SerializeField] private MeshRenderer aimObject;
     public Transform aimDirection;
     public Transform firePoint;
     public float bulletSpeed = 15f;
@@ -19,9 +24,12 @@ public class PlayerController : MonoBehaviour
     [Header("Jump Settings")]
     public float jumpForce = 10f;
     public float jumpHoldForce = 5f; // Additional force when jump is held
+    public float jumpDuration = 0.2f;
     public float jumpHoldDuration = 0.2f; // Duration for which jump can be held
     public float fallMultiplier = 2.5f; // Multiplier for falling speed
-    public float lowJumpMultiplier = 2f; // Multiplier for low jump speed
+    public float fallHoldMultiplier = 2.5f;
+
+    [SerializeField] private TextMeshProUGUI TextMeshProUGUI;
 
     private Rigidbody rb;
     private Vector3 moveInput;
@@ -38,6 +46,8 @@ public class PlayerController : MonoBehaviour
     private float jumpTimeCounter = 0f;
     private bool isHoldingJump = false;
 
+    private bool isBig = true;
+
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
@@ -53,8 +63,9 @@ public class PlayerController : MonoBehaviour
         playerInput.actions["Jump"].performed += ctx => StartJump();
         playerInput.actions["Jump"].canceled += ctx => StopJump();
 
-        playerInput.actions["Fire"].canceled += ctx => FireBullet();
-        playerInput.actions["Fire"].performed += ctx => Aim();
+        playerInput.actions["Fire"].performed += ctx => FireBullet();
+
+        playerInput.actions["ChangeScale"].performed += ctx => { isBig = !isBig; bulletState.color = isBig ? Color.red : Color.cyan; aimObject.material.color = isBig ? Color.red : Color.cyan; };
 
         Renderer renderer = firePoint.GetComponent<Renderer>();
         renderer.material.renderQueue = 4000;
@@ -69,15 +80,12 @@ public class PlayerController : MonoBehaviour
             aimDirection.rotation = Quaternion.Euler(0, 0, angle);
         }
 
-        // Update grounded status
         isGrounded = CheckGroundedByTag();
-        // Reset jump time counter when grounded
-        if (isGrounded)
-        {
-            jumpTimeCounter = jumpHoldDuration;
-        }
 
-        Death();
+        if (transform.position.y <= -25)
+        {
+            Death();
+        }
     }
 
     private void FixedUpdate()
@@ -98,21 +106,29 @@ public class PlayerController : MonoBehaviour
             }
         }
 
-        // Apply jump hold force
-        if (isHoldingJump && jumpTimeCounter > 0)
+        Jump();
+    }
+
+    private void Jump()
+    {
+        if (!isGrounded)
         {
-            rb.AddForce(Vector3.up * jumpHoldForce, ForceMode.Force);
-            jumpTimeCounter -= Time.fixedDeltaTime;
+            jumpTimeCounter += Time.fixedDeltaTime;
         }
 
-        // Modify falling and low jump speeds
-        if (rb.velocity.y < 0)
+        if (jumpTimeCounter >= jumpDuration && !isGrounded)
         {
-            rb.AddForce(Vector3.down * (fallMultiplier - 1) * Physics.gravity.y, ForceMode.Acceleration);
+            rb.AddForce(Vector3.down * fallMultiplier, ForceMode.Impulse);
         }
-        else if (rb.velocity.y > 0 && !isHoldingJump)
+
+        if (!isGrounded && isHoldingJump && jumpTimeCounter <= jumpHoldDuration && jumpTimeCounter >= jumpDuration)
         {
-            rb.AddForce(Vector3.down * (lowJumpMultiplier - 1) * Physics.gravity.y, ForceMode.Acceleration);
+            rb.AddForce(Vector3.up * jumpHoldForce, ForceMode.Impulse);
+        }
+
+        if (!isGrounded && jumpTimeCounter >= jumpHoldDuration)
+        {
+            rb.AddForce(Vector3.down * fallHoldMultiplier, ForceMode.Impulse);
         }
     }
 
@@ -120,10 +136,9 @@ public class PlayerController : MonoBehaviour
     {
         if (isGrounded)
         {
-            // Initial jump force
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
             isHoldingJump = true;
-            jumpTimeCounter = jumpHoldDuration;
+            jumpTimeCounter = 0;
         }
     }
 
@@ -154,11 +169,11 @@ public class PlayerController : MonoBehaviour
 
     private void FireBullet()
     {
-        Time.timeScale = 1.0f;
+        //Time.timeScale = 1.0f;
 
         if (bulletPrefab != null && firePoint != null)
         {
-            GameObject bullet = Instantiate(bulletPrefab, firePoint.position, firePoint.rotation);
+            GameObject bullet = Instantiate(isBig ? bulletPrefab : miniBulletPrefab, firePoint.position, firePoint.rotation);
             Rigidbody bulletRb = bullet.GetComponent<Rigidbody>();
             if (bulletRb != null)
             {
@@ -169,14 +184,19 @@ public class PlayerController : MonoBehaviour
 
     private void Aim()
     {
-        Time.timeScale = 0.3f;
+        //Time.timeScale = 0.3f;
     }
 
-    private void Death()
+    public void Death()
     {
-        if (transform.position.y <= -25)
-        {
-            SceneManager.LoadScene("Main");
-        }
+        SceneManager.LoadScene("Main");
+    }
+
+    int specialCount = 0;
+    int specialMaxCount = 3;
+    public void AddSpecial()
+    {
+        specialCount++;
+        TextMeshProUGUI.text = $"{specialCount}/{specialMaxCount}";
     }
 }
