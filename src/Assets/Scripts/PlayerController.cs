@@ -1,4 +1,3 @@
-using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
@@ -8,28 +7,28 @@ using TMPro;
 public class PlayerController : MonoBehaviour
 {
     [Header("Movement Settings")]
-    public float stopForce = 5f;
-    public float acceleration = 10f;
-    public float maxSpeed = 10f;
+    [SerializeField] private float maxSpeed = 10f;
+    [SerializeField] private float stopForce = 5f;
+    [SerializeField] private float acceleration = 10f;
 
     [Header("Shooting Settings")]
-    public GameObject bulletPrefab;
-    public GameObject miniBulletPrefab;
+    [SerializeField] private GameObject bulletPrefab;
+    [SerializeField] private GameObject miniBulletPrefab;
     [SerializeField] private Image bulletState;
     [SerializeField] private MeshRenderer aimObject;
-    public Transform aimDirection;
-    public Transform firePoint;
-    public float bulletSpeed = 15f;
+    [SerializeField] private Transform aimDirection;
+    [SerializeField] private Transform firePoint;
+    [SerializeField] private float bulletSpeed = 15f;
 
     [Header("Jump Settings")]
-    public float jumpForce = 10f;
-    public float jumpHoldForce = 5f; // Additional force when jump is held
-    public float jumpDuration = 0.2f;
-    public float jumpHoldDuration = 0.2f; // Duration for which jump can be held
-    public float fallMultiplier = 2.5f; // Multiplier for falling speed
-    public float fallHoldMultiplier = 2.5f;
+    [SerializeField] private float jumpForce = 10f;
+    [SerializeField] private float jumpHoldForce = 5f;
+    [SerializeField] private float jumpDuration = 0.2f;
+    [SerializeField] private float jumpHoldDuration = 0.2f;
+    [SerializeField] private float fallMultiplier = 2.5f;
+    [SerializeField] private float fallHoldMultiplier = 2.5f;
 
-    [SerializeField] private TextMeshProUGUI TextMeshProUGUI;
+    [SerializeField] private TextMeshProUGUI SpecialCountText;
 
     private Rigidbody rb;
     private Vector3 moveInput;
@@ -46,13 +45,20 @@ public class PlayerController : MonoBehaviour
     private float jumpTimeCounter = 0f;
     private bool isHoldingJump = false;
 
-    private bool isBig = true;
+    private bool isBigBullet = true;
 
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
         playerInput = GetComponent<PlayerInput>();
+        Renderer renderer = firePoint.GetComponent<Renderer>();
+        renderer.material.renderQueue = 4000;
 
+        InputBind();
+    }
+
+    private void InputBind()
+    {
         // Bind Input Events
         playerInput.actions["Move"].performed += ctx => moveInput = new Vector3(ctx.ReadValue<Vector2>().x, 0, 0);
         playerInput.actions["Move"].canceled += ctx => moveInput = Vector3.zero;
@@ -65,20 +71,12 @@ public class PlayerController : MonoBehaviour
 
         playerInput.actions["Fire"].performed += ctx => FireBullet();
 
-        playerInput.actions["ChangeScale"].performed += ctx => { isBig = !isBig; bulletState.color = isBig ? Color.red : Color.cyan; aimObject.material.color = isBig ? Color.red : Color.cyan; };
-
-        Renderer renderer = firePoint.GetComponent<Renderer>();
-        renderer.material.renderQueue = 4000;
+        playerInput.actions["ChangeScale"].performed += ctx => ChangeScale(); ;
     }
 
     private void Update()
     {
-        // Update aim direction
-        if (aimInput.sqrMagnitude > 0.1f)
-        {
-            float angle = Mathf.Atan2(aimInput.y, aimInput.x) * Mathf.Rad2Deg;
-            aimDirection.rotation = Quaternion.Euler(0, 0, angle);
-        }
+        Aim();
 
         isGrounded = CheckGroundedByTag();
 
@@ -89,6 +87,34 @@ public class PlayerController : MonoBehaviour
     }
 
     private void FixedUpdate()
+    {
+        Move();
+        Jump();
+    }
+
+    private void Aim()
+    {
+        if (CheckJoinGameped())
+        {
+            if (aimInput.sqrMagnitude > 0.1f)
+            {
+                float angle = Mathf.Atan2(aimInput.y, aimInput.x) * Mathf.Rad2Deg;
+                aimDirection.rotation = Quaternion.Euler(0, 0, angle);
+            }
+        }
+        else
+        {
+            Vector3 mousePosition = Input.mousePosition;
+            mousePosition.z = -Camera.main.transform.position.z; // カメラとオブジェクト間の距離を設定
+            mousePosition = Camera.main.ScreenToWorldPoint(mousePosition);
+            Vector2 direction = (mousePosition - aimDirection.position).normalized;
+            float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+
+            aimDirection.rotation = Quaternion.Euler(0, 0, angle);
+        }
+    }
+
+    private void Move()
     {
         if (moveInput != Vector3.zero)
         {
@@ -105,28 +131,35 @@ public class PlayerController : MonoBehaviour
                 rb.AddForce(new Vector3(-velocity.x * stopForce, 0, 0), ForceMode.Force);
             }
         }
-
-        Jump();
     }
 
     private void Jump()
     {
+        //ジャンプ時にタイマー計測
         if (!isGrounded)
         {
             jumpTimeCounter += Time.fixedDeltaTime;
         }
+        else
+        {
+            jumpTimeCounter = 0;
+            return;
+        }
 
-        if (jumpTimeCounter >= jumpDuration && !isGrounded)
+        //落下時の重力
+        if (jumpTimeCounter >= jumpDuration)
         {
             rb.AddForce(Vector3.down * fallMultiplier, ForceMode.Impulse);
         }
 
-        if (!isGrounded && isHoldingJump && jumpTimeCounter <= jumpHoldDuration && jumpTimeCounter >= jumpDuration)
+        //長押しジャンプ時の追加ジャンプ
+        if (isHoldingJump && jumpTimeCounter <= jumpHoldDuration && jumpTimeCounter >= jumpDuration)
         {
             rb.AddForce(Vector3.up * jumpHoldForce, ForceMode.Impulse);
         }
 
-        if (!isGrounded && jumpTimeCounter >= jumpHoldDuration)
+        //長押しジャンプ後の重力
+        if (jumpTimeCounter >= jumpHoldDuration)
         {
             rb.AddForce(Vector3.down * fallHoldMultiplier, ForceMode.Impulse);
         }
@@ -147,6 +180,47 @@ public class PlayerController : MonoBehaviour
         isHoldingJump = false;
     }
 
+    //スケールオブジェクトの反動で受ける追加ジャンプ
+    public void AddJump(Vector3 dir, float power)
+    {
+        rb.AddForce(dir * power, ForceMode.Impulse);
+        isHoldingJump = false;
+    }
+
+    private void ChangeScale()
+    {
+        isBigBullet = !isBigBullet; bulletState.color = isBigBullet ? Color.red : Color.cyan;
+        aimObject.material.color = isBigBullet ? Color.red : Color.cyan;
+    }
+
+    private void FireBullet()
+    {
+        if (bulletPrefab != null && firePoint != null)
+        {
+            GameObject bullet = Instantiate(isBigBullet ? bulletPrefab : miniBulletPrefab, firePoint.position, firePoint.rotation);
+            Rigidbody bulletRb = bullet.GetComponent<Rigidbody>();
+            if (bulletRb != null)
+            {
+                bulletRb.velocity = firePoint.right * bulletSpeed;
+            }
+        }
+    }
+
+    public void Death()
+    {
+        SceneManager.LoadScene("Main");
+    }
+
+    int specialCount = 0;
+    int specialMaxCount = 3;
+    public void AddSpecial()
+    {
+        specialCount++;
+        SpecialCountText.text = $"{specialCount}/{specialMaxCount}";
+    }
+
+
+
     private bool CheckGroundedByTag()
     {
         Collider[] colliders = Physics.OverlapSphere(groundCheck.position, groundCheckRadius, groundLayer);
@@ -160,43 +234,40 @@ public class PlayerController : MonoBehaviour
         return false;
     }
 
-    public void AddJump(Vector3 dir, float power)
+    private bool CheckJoinGameped()
     {
-        if (isHoldingJump) return;
-        rb.AddForce(dir * power, ForceMode.Impulse);
-        isHoldingJump = false;
-    }
+        string[] joystickNames = Input.GetJoystickNames();
 
-    private void FireBullet()
-    {
-        //Time.timeScale = 1.0f;
-
-        if (bulletPrefab != null && firePoint != null)
+        if (joystickNames.Length > 0)
         {
-            GameObject bullet = Instantiate(isBig ? bulletPrefab : miniBulletPrefab, firePoint.position, firePoint.rotation);
-            Rigidbody bulletRb = bullet.GetComponent<Rigidbody>();
-            if (bulletRb != null)
+            // 接続されているジョイスティックを確認
+            bool isGamepadConnected = false;
+
+            foreach (string name in joystickNames)
             {
-                bulletRb.velocity = firePoint.right * bulletSpeed;
+                if (!string.IsNullOrEmpty(name))
+                {
+                    isGamepadConnected = true;
+                    break;
+                }
             }
+
+            if (isGamepadConnected)
+            {
+                Debug.Log("ゲームパッドが接続されています。");
+            }
+            else
+            {
+                Debug.Log("ジョイスティックは検出されましたが、名前が空です。");
+            }
+
+            return isGamepadConnected;
         }
-    }
+        else
+        {
+            Debug.Log("ゲームパッドは接続されていません。");
 
-    private void Aim()
-    {
-        //Time.timeScale = 0.3f;
-    }
-
-    public void Death()
-    {
-        SceneManager.LoadScene("Main");
-    }
-
-    int specialCount = 0;
-    int specialMaxCount = 3;
-    public void AddSpecial()
-    {
-        specialCount++;
-        TextMeshProUGUI.text = $"{specialCount}/{specialMaxCount}";
+            return false;
+        }
     }
 }

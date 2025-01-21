@@ -304,6 +304,17 @@
                     "action": "ChangeScale",
                     "isComposite": false,
                     "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "79b4bec7-1318-4207-b771-dd8a80f86ee7",
+                    "path": "<Keyboard>/z",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ChangeScale",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         },

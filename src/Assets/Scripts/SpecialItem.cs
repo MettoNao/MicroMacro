@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Special : MonoBehaviour
+public class SpecialItem : MonoBehaviour
 {
     private void OnTriggerEnter(Collider other)
     {

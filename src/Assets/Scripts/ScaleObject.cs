@@ -5,14 +5,14 @@ using DG.Tweening;
 
 public class ScaleObject : MonoBehaviour
 {
-    [SerializeField] private float maxScale,minScale;
+    [SerializeField] private float maxScale, minScale;
     private bool isScaleNow;
 
     public void OnScale(float addSclae)
     {
         if (transform.localScale.magnitude < minScale) return;
         isScaleNow = true;
-        transform.DOScale(transform.localScale + new Vector3(transform.localScale.x, transform.localScale.y, 0).normalized * addSclae,0.8f)
+        transform.DOScale(transform.localScale + new Vector3(transform.localScale.x, transform.localScale.y, 0).normalized * addSclae, 0.8f)
             .SetEase(Ease.OutBounce)
             .SetUpdate(true)
             .OnComplete(() => isScaleNow = false);
@@ -29,6 +29,7 @@ public class ScaleObject : MonoBehaviour
         }
     }
 
+    //4方向に絞る(仮)
     public static Vector3 SnapToClosestDirection(Vector3 input)
     {
         // 定義される方向ベクトル
