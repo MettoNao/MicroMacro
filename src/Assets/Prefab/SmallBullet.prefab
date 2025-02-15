@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 6579268732710040096}
   - component: {fileID: 4228915200169400571}
   - component: {fileID: -5683330301366556228}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: SmallBullet
   m_TagString: Bullet
   m_Icon: {fileID: 0}
@@ -129,7 +129,7 @@ Rigidbody:
     m_Bits: 0
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
-  m_UseGravity: 1
+  m_UseGravity: 0
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0

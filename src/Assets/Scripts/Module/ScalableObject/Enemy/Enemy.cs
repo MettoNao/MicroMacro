@@ -13,9 +13,11 @@ namespace Module.ScalableObject.Enemy
         [SerializeField][Header("最小サイズ")] private float minimumScale;
         [SerializeField][Header("初期サイズへ戻る時間")] private float revivalTime;
         [SerializeField][Header("移動速度")] private float moveSpeed;
-        [SerializeField][Header("攻撃範囲")] private float attackInterval;
+        [SerializeField][Header("最短攻撃間隔")] private float minAttackInterval;
+        [SerializeField] [Header("最長攻撃間隔")] private float maxAttackInterval;
 
         [SerializeField] private MeshRenderer meshRenderer;
+        [SerializeField] private EnemyAttack enemyAttack;
 
         private float revivalTimer, attackTimer;
         private Tweener tweener, deathTweener;
@@ -25,15 +27,17 @@ namespace Module.ScalableObject.Enemy
         private EnemyModel enemyModel;
         private readonly IDisposable subscription;
         private GameObject player;
-        private Rigidbody rb;
 
         void Start()
         {
             enemyModel = new EnemyModel();
             enemyModel.SetScale((int)startScale);
-            startLocalScale = transform.localScale;
+
             player = GameObject.FindGameObjectWithTag("Player");
-            rb = GetComponent<Rigidbody>();
+
+            attackTimer = UnityEngine.Random.Range(minAttackInterval, maxAttackInterval);
+            revivalTimer = revivalTime;
+            startLocalScale = transform.localScale;
 
             enemyModel.Scale.Subscribe(scale =>
             {
@@ -52,7 +56,6 @@ namespace Module.ScalableObject.Enemy
                 switch (state)
                 {
                     case EnemyModel.EnemyState.Idle:
-                        meshRenderer.material.color = Color.red;
                         break;
 
                     case EnemyModel.EnemyState.Scalling:
@@ -60,7 +63,7 @@ namespace Module.ScalableObject.Enemy
                         break;
 
                     case EnemyModel.EnemyState.Attack:
-                        StartCoroutine(Attack());
+                        enemyAttack.Attack(player.transform,() => { enemyModel.SetState(EnemyModel.EnemyState.Idle); });
                         break;
 
                     case EnemyModel.EnemyState.Minimizing:
@@ -80,35 +83,38 @@ namespace Module.ScalableObject.Enemy
 
             if (enemyModel.State.Value == EnemyModel.EnemyState.Minimizing)
             {
-                revivalTimer += Time.deltaTime;
+                UpdateRevivalTimer();
             }
 
-            attackTimer += Time.deltaTime;
-
-            if (revivalTimer >= revivalTime)
+            if (enemyModel.State.Value == EnemyModel.EnemyState.Idle) 
             {
-                enemyModel.SetState(EnemyModel.EnemyState.Idle);
-                OnScale(startScale);
-                revivalTimer = 0;
-                attackTimer = 0;
-            }
-
-            if (attackTimer >= attackInterval && enemyModel.State.Value == EnemyModel.EnemyState.Idle)
-            {
-                enemyModel.SetState(EnemyModel.EnemyState.Attack);
-                attackTimer = 0;
+                UpdateAttackTimer();
             }
         }
 
-        IEnumerator Attack()
+        void UpdateAttackTimer()
         {
-            meshRenderer.material.color = Color.yellow;
-            yield return new WaitForSeconds(0.3f);
-            meshRenderer.material.color = Color.red;
-            rb.velocity = (player.transform.position - transform.position).normalized * moveSpeed;
-            yield return new WaitForSeconds(0.3f);
-            rb.velocity = Vector3.zero;
-            enemyModel.SetState(EnemyModel.EnemyState.Idle);
+            attackTimer -= Time.deltaTime;
+
+            if (attackTimer <= 0)
+            {
+                attackTimer = UnityEngine.Random.Range(minAttackInterval,maxAttackInterval);
+                enemyModel.SetState(EnemyModel.EnemyState.Attack);
+            }
+        }
+
+        void UpdateRevivalTimer()
+        {
+            revivalTimer -= Time.deltaTime;
+
+            if (revivalTimer <= 0)
+            {
+                enemyModel.SetState(EnemyModel.EnemyState.Idle);
+                meshRenderer.material.color = Color.red;
+                OnScale(startScale);
+                revivalTimer = revivalTime;
+                attackTimer = maxAttackInterval;
+            }
         }
 
         public void OnScale(float addScale)
@@ -119,7 +125,7 @@ namespace Module.ScalableObject.Enemy
         private void OnScaleAnimation()
         {
             var toScale = startLocalScale * (enemyModel.Scale.Value / startScale);
-            if (toScale.magnitude <= minimumScale) toScale = Vector3.one * minimumScale;
+            if (toScale.x <= minimumScale) toScale = Vector3.one * minimumScale;
 
             tweener = transform.DOScale(toScale, 0.3f)
                 .SetEase(Ease.OutBounce)
@@ -165,7 +171,7 @@ namespace Module.ScalableObject.Enemy
                 //それ以外はプレイヤーにダメージ
                 else
                 {
-                    collision.gameObject.GetComponent<PlayerController>().Death();
+                    collision.gameObject.GetComponent<PlayerController>().Damage(1);
                 }
             }
         }

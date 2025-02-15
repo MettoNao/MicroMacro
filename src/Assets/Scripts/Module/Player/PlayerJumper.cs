@@ -1,7 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
+using Cysharp.Threading.Tasks;
 using Module.Utile;
 using UnityEngine;
+using System;
 
 namespace Module.Player
 {
@@ -10,6 +13,7 @@ namespace Module.Player
         private Rigidbody rb;
         private float jumpTimeCounter = 0f;
         private bool isHoldingJump = false;
+        private bool isAddingJump = false;
 
         private GroundChecker groundChecker;
         private PlayerParamater playerParamater;
@@ -28,12 +32,20 @@ namespace Module.Player
             {
                 jumpTimeCounter = 0;
                 rb.AddForce(new Vector3(0, -rb.velocity.y, 0));
+                isAddingJump = false;
                 return;
             }
             //ジャンプ時にタイマー計測
             else
             {
                 jumpTimeCounter += Time.fixedDeltaTime;
+            }
+
+            //追加ジャンプ時の重力
+            if (isAddingJump)
+            {
+                rb.AddForce(Vector3.down * playerParamater.addingJumpMultiplier, ForceMode.Impulse);
+                return;
             }
 
             //落下時の重力
@@ -77,6 +89,13 @@ namespace Module.Player
         {
             rb.AddForce(dir * power, ForceMode.Impulse);
             isHoldingJump = false;
+            SetIsAddingJumpFlg().Forget();
+        }
+
+        private async UniTask SetIsAddingJumpFlg()
+        {
+            await UniTask.WaitForSeconds(0.1f);
+            isAddingJump = true;
         }
     }
 }

@@ -6,7 +6,13 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/Scenes/Title.unity
+    guid: e7521a54bed15ca4e9abb2fb0de720d9
+  - enabled: 1
     path: Assets/Scenes/Main.unity
     guid: 9fc0d4010bbf28b4594072e72b8655ab
+  - enabled: 1
+    path: Assets/Scenes/EnemyTest.unity
+    guid: 982b109809c1746ed95b1dd22724601a
   m_configObjects:
     com.unity.input.settings: {fileID: 11400000, guid: 37e470bb65b65484ab3757484edce27c, type: 2}

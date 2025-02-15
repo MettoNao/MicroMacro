@@ -17,5 +17,6 @@ namespace Module.Player
         [Header("長押しジャンプ時間"), SerializeField] internal float jumpHoldDuration = 0.2f;
         [Header("落下時の重力"), SerializeField] internal float fallMultiplier = 2.5f;
         [Header("長押し時の重力"), SerializeField] internal float fallHoldMultiplier = 2.5f;
+        [Header("追加ジャンプ時の重力"), SerializeField] internal float addingJumpMultiplier = 2.5f;
     }
 }

@@ -12,10 +12,12 @@ GameObject:
   - component: {fileID: 9000914960599521364}
   - component: {fileID: 2848555863456062054}
   - component: {fileID: 2097553180435079246}
-  - component: {fileID: 9110248445583182768}
   - component: {fileID: 1434220463310609739}
-  m_Layer: 0
-  m_Name: Enemy
+  - component: {fileID: 9110248445583182768}
+  - component: {fileID: 7210510808743151778}
+  - component: {fileID: 5302789189807066221}
+  m_Layer: 10
+  m_Name: RushEnemy
   m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -93,7 +95,7 @@ BoxCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4610325653058729544}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: a6770fb83d98a2848a91f1f0bce1fdf5, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -107,24 +109,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &9110248445583182768
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4610325653058729544}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6902b0d193751d44480c5bf364454f93, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  startScale: 20
-  minimumScale: 1.5
-  revivalTime: 5
-  moveSpeed: 50
-  attackInterval: 3
-  meshRenderer: {fileID: 2848555863456062054}
 --- !u!54 &1434220463310609739
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -133,9 +117,9 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4610325653058729544}
   serializedVersion: 4
-  m_Mass: 86.45
-  m_Drag: 0
-  m_AngularDrag: 0.05
+  m_Mass: 10
+  m_Drag: 10
+  m_AngularDrag: 0
   m_CenterOfMass: {x: 0, y: 0, z: 0}
   m_InertiaTensor: {x: 1, y: 1, z: 1}
   m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
@@ -152,3 +136,53 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 120
   m_CollisionDetection: 0
+--- !u!114 &9110248445583182768
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4610325653058729544}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6902b0d193751d44480c5bf364454f93, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  startScale: 20
+  minimumScale: 1.5
+  revivalTime: 5
+  moveSpeed: 50
+  minAttackInterval: 2
+  maxAttackInterval: 5
+  meshRenderer: {fileID: 2848555863456062054}
+  enemyAttack: {fileID: 7210510808743151778}
+--- !u!114 &7210510808743151778
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4610325653058729544}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e57d501b1d9bb424d9ebbda264d81b82, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  attackEffectSetter: {fileID: 5302789189807066221}
+  rigbody: {fileID: 1434220463310609739}
+  rushPower: 30
+  rushTime: 0.6
+--- !u!114 &5302789189807066221
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4610325653058729544}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a479a783732f36c41afbb856e7e4bc6f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  meshRenderer: {fileID: 2848555863456062054}
+  flashTime: 0.2
