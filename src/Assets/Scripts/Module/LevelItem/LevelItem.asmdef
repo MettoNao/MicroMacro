@@ -1,0 +1,16 @@
+{
+    "name": "LevelItem",
+    "rootNamespace": "",
+    "references": [
+        "GUID:617ee915248b54d128fa606efbc8e4be"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
