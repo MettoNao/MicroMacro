@@ -30,6 +30,9 @@ namespace Module.Player
             //着地時にタイマーリセット
             if (groundChecker.CheckGroundedByTag())
             {
+                if (isHoldingJump)  // ジャンプボタン押したままならリセットしない
+                    return;
+                
                 jumpTimeCounter = 0;
                 rb.AddForce(new Vector3(0, -rb.velocity.y, 0));
                 isAddingJump = false;
@@ -41,31 +44,38 @@ namespace Module.Player
                 jumpTimeCounter += Time.fixedDeltaTime;
             }
 
-            //追加ジャンプ時の重力
-            if (isAddingJump)
-            {
-                rb.AddForce(Vector3.down * playerParamater.addingJumpMultiplier, ForceMode.Impulse);
-                return;
-            }
-
-            //落下時の重力
-            if (!isHoldingJump && jumpTimeCounter >= playerParamater.jumpDuration)
-            {
-                rb.AddForce(Vector3.down * playerParamater.fallMultiplier, ForceMode.Impulse);
-                return;
-            }
-
             //長押しジャンプ時の追加ジャンプ
             if (isHoldingJump && jumpTimeCounter <= playerParamater.jumpHoldDuration && jumpTimeCounter >= playerParamater.jumpDuration)
             {
                 rb.AddForce(Vector3.up * playerParamater.jumpHoldForce, ForceMode.Impulse);
-                return;
             }
+            
+            Gravity();
+        }
 
-            //長押しジャンプ後の重力
-            if (jumpTimeCounter >= playerParamater.jumpHoldDuration)
+        private void Gravity()
+        {
+            if (!groundChecker.CheckGroundedByTag())
             {
-                rb.AddForce(Vector3.down * playerParamater.fallHoldMultiplier, ForceMode.Impulse);
+                //追加ジャンプ時の重力
+                if (isAddingJump)
+                {
+                    rb.AddForce(Vector3.down * playerParamater.addingJumpMultiplier, ForceMode.Impulse);
+                    return;
+                }
+                
+                //長押しジャンプ後の重力
+                if (jumpTimeCounter >= playerParamater.jumpHoldDuration)
+                {
+                    rb.AddForce(Vector3.down * playerParamater.fallHoldMultiplier, ForceMode.Impulse);
+                    return;
+                }
+                
+                //落下時の重力
+                if (!isHoldingJump)
+                {
+                    rb.AddForce(Vector3.down * playerParamater.fallMultiplier, ForceMode.Impulse);
+                }
             }
         }
 

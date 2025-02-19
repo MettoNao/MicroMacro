@@ -7365,11 +7365,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7734444724945709640, guid: fd9675d0a67c04ce6a0784b439420843, type: 3}
       propertyPath: playerParamater.jumpHoldForce
-      value: 0.6
+      value: 0.7
       objectReference: {fileID: 0}
     - target: {fileID: 7734444724945709640, guid: fd9675d0a67c04ce6a0784b439420843, type: 3}
       propertyPath: playerParamater.fallMultiplier
       value: 2.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7734444724945709640, guid: fd9675d0a67c04ce6a0784b439420843, type: 3}
+      propertyPath: playerParamater.airAcceleration
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 7734444724945709640, guid: fd9675d0a67c04ce6a0784b439420843, type: 3}
       propertyPath: playerParamater.jumpHoldDuration

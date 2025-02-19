@@ -22,12 +22,21 @@ namespace Module.Player
             {
                 if (Mathf.Abs(rb.velocity.x) < playerParamater.maxSpeed)
                 {
-                    rb.AddForce(new Vector3(moveInput.x * playerParamater.acceleration, 0, 0), ForceMode.Force);
+                    if (groundChecker.CheckGroundedByTag())
+                    {
+                        rb.AddForce(new Vector3(moveInput.x * playerParamater.acceleration, 0, 0), ForceMode.Force);
+                    }
+                    else
+                    {
+                        // 空中では加速を弱める
+                        rb.AddForce(new Vector3(moveInput.x * playerParamater.airAcceleration, 0, 0), ForceMode.Force);
+                    }
                 }
             }
             else
             {
-                if (!groundChecker.CheckGroundedByTag())
+                // 空中でスティック離したとき慣性乗せる
+                if (!groundChecker.CheckGroundedByTag())    
                     return;
                 
                 Vector3 velocity = rb.velocity;
