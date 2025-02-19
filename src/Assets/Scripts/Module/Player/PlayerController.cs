@@ -37,7 +37,7 @@ namespace Module.Player
             rb = GetComponent<Rigidbody>();
             playerInput = GetComponent<PlayerInput>();
 
-            playerMover = new PlayerMover(rb, playerParamater);
+            playerMover = new PlayerMover(rb, groundChecker,playerParamater);
             playerJumper = new PlayerJumper(rb, groundChecker, playerParamater);
 
             InputBind();
