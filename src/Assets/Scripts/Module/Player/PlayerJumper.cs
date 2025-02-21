@@ -5,6 +5,7 @@ using Cysharp.Threading.Tasks;
 using Module.Utile;
 using UnityEngine;
 using System;
+using UnityEngine.InputSystem;
 
 namespace Module.Player
 {
@@ -32,7 +33,7 @@ namespace Module.Player
             {
                 if (isHoldingJump)  // ジャンプボタン押したままならリセットしない
                     return;
-                
+
                 jumpTimeCounter = 0;
                 rb.AddForce(new Vector3(0, -rb.velocity.y, 0));
                 isAddingJump = false;
@@ -49,7 +50,7 @@ namespace Module.Player
             {
                 rb.AddForce(Vector3.up * playerParamater.jumpHoldForce, ForceMode.Impulse);
             }
-            
+
             Gravity();
         }
 
@@ -63,14 +64,14 @@ namespace Module.Player
                     rb.AddForce(Vector3.down * playerParamater.addingJumpMultiplier, ForceMode.Impulse);
                     return;
                 }
-                
+
                 //長押しジャンプ後の重力
                 if (jumpTimeCounter >= playerParamater.jumpHoldDuration)
                 {
                     rb.AddForce(Vector3.down * playerParamater.fallHoldMultiplier, ForceMode.Impulse);
                     return;
                 }
-                
+
                 //落下時の重力
                 if (!isHoldingJump)
                 {
@@ -79,7 +80,7 @@ namespace Module.Player
             }
         }
 
-        public void StartJump()
+        public void StartJump(InputAction.CallbackContext context)
         {
             if (groundChecker.CheckGroundedByTag())
             {
@@ -89,7 +90,7 @@ namespace Module.Player
             }
         }
 
-        public void StopJump()
+        public void StopJump(InputAction.CallbackContext context)
         {
             isHoldingJump = false;
         }
