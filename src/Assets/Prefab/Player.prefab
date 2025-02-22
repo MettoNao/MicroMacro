@@ -1049,6 +1049,7 @@ MonoBehaviour:
   playerParamater:
     maxSpeed: 15
     acceleration: 30
+    airAcceleration: 5
     stopForce: 15
     jumpForce: 15
     jumpHoldForce: 0.5
