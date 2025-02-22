@@ -31,8 +31,7 @@ namespace Module.LevelItem
             if (collision.gameObject.CompareTag("Player"))
             {
                 PlayerController playerController = collision.gameObject.GetComponent<PlayerController>();
-                Vector2 direction = -playerController.Direction;
-                playerController.AddJump(direction, 50);
+                playerController.AddJump(-collision.GetContact(0).normal, 50);
                 isScaleNow = false;
             }
         }
