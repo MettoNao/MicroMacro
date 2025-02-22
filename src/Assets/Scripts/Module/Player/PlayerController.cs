@@ -31,13 +31,13 @@ namespace Module.Player
         private PlayerInput playerInput;
 
         private bool isBigBullet = true;
-
+        InputActionMap map;
         private void Awake()
         {
             rb = GetComponent<Rigidbody>();
             playerInput = GetComponent<PlayerInput>();
 
-            playerMover = new PlayerMover(rb, playerParamater);
+            playerMover = new PlayerMover(rb, groundChecker, playerParamater);
             playerJumper = new PlayerJumper(rb, groundChecker, playerParamater);
 
             InputBind();
@@ -45,17 +45,23 @@ namespace Module.Player
 
         private void InputBind()
         {
-            playerInput.actions["Move"].performed += ctx => moveInput = new Vector3(ctx.ReadValue<Vector2>().x, 0, 0);
-            playerInput.actions["Move"].canceled += ctx => moveInput = Vector3.zero;
+            map = playerInput.currentActionMap;
+            map["Move"].performed += ctx => moveInput = new Vector3(ctx.ReadValue<Vector2>().x, 0, 0);
+            map["Move"].canceled += ctx => moveInput = Vector3.zero;
 
-            playerInput.actions["Aim"].performed += ctx => playerAimer.Aim(ctx.ReadValue<Vector2>());
+            map["Aim"].performed += Aim;
 
-            playerInput.actions["Jump"].performed += ctx => playerJumper.StartJump();
-            playerInput.actions["Jump"].canceled += ctx => playerJumper.StopJump();
+            map["Jump"].performed += playerJumper.StartJump;
+            map["Jump"].canceled += playerJumper.StopJump;
 
-            playerInput.actions["Fire"].performed += ctx => playerShooter.FireBullet(isBigBullet);
+            map["Fire"].performed += ctx => playerShooter.FireBullet(isBigBullet);
 
-            playerInput.actions["ChangeScale"].performed += ctx => ChangeScale();
+            map["ChangeScale"].performed += ChangeScale;
+        }
+
+        void Aim(InputAction.CallbackContext context)
+        {
+            playerAimer.Aim(context.ReadValue<Vector2>());
         }
 
         private void Update()
@@ -67,6 +73,7 @@ namespace Module.Player
 
             if (Input.GetKeyDown(KeyCode.Escape))
             {
+                map?.Dispose();
                 SceneManager.LoadScene("Title");
             }
         }
@@ -82,7 +89,7 @@ namespace Module.Player
             playerJumper.AddJump(dir, power);
         }
 
-        private void ChangeScale()
+        private void ChangeScale(InputAction.CallbackContext context)
         {
             isBigBullet = !isBigBullet;
             bulletState.color = isBigBullet ? Color.red : Color.cyan;
@@ -123,6 +130,15 @@ namespace Module.Player
         {
             specialCount++;
             SpecialCountText.text = $"{specialCount}/{specialMaxCount}";
+        }
+
+        private void OnDestroy()
+        {
+            map["Aim"].performed -= Aim;
+            map["Jump"].performed -= playerJumper.StartJump;
+            map["Jump"].canceled -= playerJumper.StopJump;
+            map["ChangeScale"].performed -= ChangeScale;
+            map?.Dispose();
         }
     }
 }

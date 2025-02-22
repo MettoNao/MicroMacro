@@ -9,6 +9,7 @@ namespace Module.Player
         [Header("Movement Settings")]
         [Header("最大速度"), SerializeField] internal float maxSpeed = 10f;
         [Header("加速度"), SerializeField] internal float acceleration = 10f;
+        [Header("空中での加速度"), SerializeField] internal float airAcceleration = 5f;
         [Header("速度減衰"), SerializeField] internal float stopForce = 5f;
         [Header("Jump Settings")]
         [Header("ジャンプ力"), SerializeField] internal float jumpForce = 10f;

@@ -7351,6 +7351,38 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
+    - target: {fileID: 7734444724945709640, guid: fd9675d0a67c04ce6a0784b439420843, type: 3}
+      propertyPath: playerParamater.jumpForce
+      value: 17
+      objectReference: {fileID: 0}
+    - target: {fileID: 7734444724945709640, guid: fd9675d0a67c04ce6a0784b439420843, type: 3}
+      propertyPath: playerParamater.stopForce
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 7734444724945709640, guid: fd9675d0a67c04ce6a0784b439420843, type: 3}
+      propertyPath: playerParamater.acceleration
+      value: 55
+      objectReference: {fileID: 0}
+    - target: {fileID: 7734444724945709640, guid: fd9675d0a67c04ce6a0784b439420843, type: 3}
+      propertyPath: playerParamater.jumpHoldForce
+      value: 0.7
+      objectReference: {fileID: 0}
+    - target: {fileID: 7734444724945709640, guid: fd9675d0a67c04ce6a0784b439420843, type: 3}
+      propertyPath: playerParamater.fallMultiplier
+      value: 2.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7734444724945709640, guid: fd9675d0a67c04ce6a0784b439420843, type: 3}
+      propertyPath: playerParamater.airAcceleration
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 7734444724945709640, guid: fd9675d0a67c04ce6a0784b439420843, type: 3}
+      propertyPath: playerParamater.jumpHoldDuration
+      value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7734444724945709640, guid: fd9675d0a67c04ce6a0784b439420843, type: 3}
+      propertyPath: playerParamater.fallHoldMultiplier
+      value: 2.7
+      objectReference: {fileID: 0}
     - target: {fileID: 8498966130987967999, guid: fd9675d0a67c04ce6a0784b439420843, type: 3}
       propertyPath: m_LocalPosition.x
       value: 2
@@ -7391,6 +7423,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8933341209222048290, guid: fd9675d0a67c04ce6a0784b439420843, type: 3}
+      propertyPath: m_Material
+      value: 
+      objectReference: {fileID: 13400000, guid: 9152a8b66895d534193cbd6ebc3db596, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
