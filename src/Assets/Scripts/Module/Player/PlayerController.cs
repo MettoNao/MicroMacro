@@ -32,6 +32,8 @@ namespace Module.Player
 
         private bool isBigBullet = true;
         InputActionMap map;
+        public Vector2 Direction { get; set; }
+
         private void Awake()
         {
             rb = GetComponent<Rigidbody>();
@@ -46,22 +48,39 @@ namespace Module.Player
         private void InputBind()
         {
             map = playerInput.currentActionMap;
-            map["Move"].performed += ctx => moveInput = new Vector3(ctx.ReadValue<Vector2>().x, 0, 0);
-            map["Move"].canceled += ctx => moveInput = Vector3.zero;
+            
+            map["Move"].performed += MoveInput;
+            map["Move"].canceled += MoveInputZero;
 
             map["Aim"].performed += Aim;
 
             map["Jump"].performed += playerJumper.StartJump;
             map["Jump"].canceled += playerJumper.StopJump;
 
-            map["Fire"].performed += ctx => playerShooter.FireBullet(isBigBullet);
+            map["Fire"].performed += Fire;
 
             map["ChangeScale"].performed += ChangeScale;
         }
 
+        void MoveInput(InputAction.CallbackContext ctx)
+        {
+            moveInput = new Vector3(ctx.ReadValue<Vector2>().x, 0, 0);
+        }
+        
+        void MoveInputZero(InputAction.CallbackContext callbackContext)
+        {
+            moveInput = Vector3.zero;
+        }
+
+        void Fire(InputAction.CallbackContext callbackContext)
+        {
+            playerShooter.FireBullet(isBigBullet);
+        }
+
         void Aim(InputAction.CallbackContext context)
         {
-            playerAimer.Aim(context.ReadValue<Vector2>());
+            Direction = context.ReadValue<Vector2>().normalized;
+            playerAimer.Aim(Direction);
         }
 
         private void Update()
@@ -134,9 +153,12 @@ namespace Module.Player
 
         private void OnDestroy()
         {
+            map["Move"].performed -= MoveInput;
+            map["Move"].canceled -= MoveInputZero;
             map["Aim"].performed -= Aim;
             map["Jump"].performed -= playerJumper.StartJump;
             map["Jump"].canceled -= playerJumper.StopJump;
+            map["Fire"].performed -= Fire;
             map["ChangeScale"].performed -= ChangeScale;
             map?.Dispose();
         }

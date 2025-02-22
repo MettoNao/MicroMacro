@@ -13,9 +13,14 @@ namespace Module.LevelItem
         public void OnScale(float addSclae)
         {
             if (transform.localScale.magnitude < minScale) return;
-            isScaleNow = true;
-            transform.DOScale(transform.localScale + new Vector3(transform.localScale.x, transform.localScale.y, 0).normalized * addSclae, 0.8f)
-                .SetEase(Ease.OutBounce)
+
+            if (addSclae > 0f)
+            {
+                isScaleNow = true;
+            }
+
+            transform.DOScale(transform.localScale + new Vector3(transform.localScale.x, transform.localScale.y, 0).normalized * addSclae, 0.6f)
+                .SetEase(Ease.OutBounce, -0.3f)
                 .SetUpdate(true)
                 .OnComplete(() => isScaleNow = false);
         }
@@ -25,32 +30,33 @@ namespace Module.LevelItem
             if (!isScaleNow) return;
             if (collision.gameObject.CompareTag("Player"))
             {
-                var dir = collision.transform.position - transform.position;
-                collision.gameObject.GetComponent<PlayerController>().AddJump(SnapToClosestDirection(dir), 50);
+                PlayerController playerController = collision.gameObject.GetComponent<PlayerController>();
+                Vector2 direction = -playerController.Direction;
+                playerController.AddJump(direction, 50);
                 isScaleNow = false;
             }
         }
 
-        //4•ûŒü‚Éi‚é(‰¼)
+        //4æ–¹å‘ã«çµã‚‹(ä»®)
         public static Vector3 SnapToClosestDirection(Vector3 input)
         {
-            // ’è‹`‚³‚ê‚é•ûŒüƒxƒNƒgƒ‹
+            // å®šç¾©ã•ã‚Œã‚‹æ–¹å‘ãƒ™ã‚¯ãƒˆãƒ«
             Vector3[] directions = new Vector3[]
             {
-            Vector3.up,
-            Vector3.down,
-            Vector3.left,
-            Vector3.right
+                Vector3.up,
+                Vector3.down,
+                Vector3.left,
+                Vector3.right
             };
 
-            // Å¬‹——£‚Æ‚»‚Ì•ûŒü‚ğ•Û
+            // æœ€å°è·é›¢ã¨ãã®æ–¹å‘ã‚’ä¿æŒ
             float minDistance = float.MaxValue;
             Vector3 closestDirection = Vector3.zero;
 
-            // “ü—ÍƒxƒNƒgƒ‹‚ğ³‹K‰»i•ûŒü‚¾‚¯‚ğŒvZ‚·‚é‚½‚ßj
+            // å…¥åŠ›ãƒ™ã‚¯ãƒˆãƒ«ã‚’æ­£è¦åŒ–ï¼ˆæ–¹å‘ã ã‘ã‚’è¨ˆç®—ã™ã‚‹ãŸã‚ï¼‰
             Vector3 normalizedInput = input.normalized;
 
-            // Še•ûŒüƒxƒNƒgƒ‹‚Æ‚Ì‹——£‚ğ”äŠr
+            // å„æ–¹å‘ãƒ™ã‚¯ãƒˆãƒ«ã¨ã®è·é›¢ã‚’æ¯”è¼ƒ
             foreach (Vector3 direction in directions)
             {
                 float distance = Vector3.Distance(normalizedInput, direction);
@@ -63,6 +69,5 @@ namespace Module.LevelItem
 
             return closestDirection;
         }
-
     }
 }
