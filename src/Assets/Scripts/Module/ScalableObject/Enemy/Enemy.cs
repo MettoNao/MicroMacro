@@ -19,6 +19,8 @@ namespace Module.ScalableObject.Enemy
         [SerializeField] private MeshRenderer meshRenderer;
         [SerializeField] private EnemyAttack enemyAttack;
 
+        private bool _isEncount;
+        
         private float revivalTimer, attackTimer;
         private Tweener tweener, deathTweener;
 
@@ -63,7 +65,7 @@ namespace Module.ScalableObject.Enemy
                         break;
 
                     case EnemyModel.EnemyState.Attack:
-                        enemyAttack.Attack(player.transform,() => { enemyModel.SetState(EnemyModel.EnemyState.Idle); });
+                        enemyAttack.Attack(player.transform,() => { enemyModel.SetState(EnemyModel.EnemyState.Idle); }, _isEncount);
                         break;
 
                     case EnemyModel.EnemyState.Minimizing:
@@ -155,6 +157,11 @@ namespace Module.ScalableObject.Enemy
                 deathTweener?.Kill();
                 tweener?.Kill();
             }
+        }
+
+        public bool isEncount
+        {
+            set {  _isEncount = value; }
         }
 
         private void OnCollisionEnter(Collision collision)
