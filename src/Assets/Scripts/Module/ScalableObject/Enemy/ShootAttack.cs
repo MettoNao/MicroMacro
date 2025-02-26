@@ -11,8 +11,14 @@ namespace Module.ScalableObject
         [SerializeField] private EnemyBullet bulletPrefab;
         [SerializeField] private Transform firePoint;
 
-        public override void Attack(Transform target, Action attackEndEvent)
+        public override void Attack(Transform target, Action attackEndEvent, bool isEncount)
         {
+            if (!isEncount) // 接敵してなければ攻撃なし
+            {
+                attackEndEvent.Invoke();
+                return;
+            }
+            
             if (bulletPrefab != null && firePoint != null)
             {
                 var attackDirection = (target.transform.position - transform.position).normalized;

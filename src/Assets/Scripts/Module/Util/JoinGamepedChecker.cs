@@ -22,7 +22,7 @@ public class JoinGamepedChecker
 
             if (isGamepadConnected)
             {
-                Debug.Log("ゲームパッドが接続されています。");
+               // Debug.Log("ゲームパッドが接続されています。");
             }
             else
             {

@@ -14,17 +14,27 @@ namespace Module.ScalableObject
         private Action attackEndEvent;
         private bool isAttack;
         private Vector3 attackDirection;
+        private bool isEncount; 
 
-        public override void Attack(Transform target, Action attackEndEvent)
+        public override void Attack(Transform target, Action attackEndEvent, bool isEncount)
         {
+            this.isEncount = isEncount; // 不本意
+            
             this.attackEndEvent = attackEndEvent;
 
             attackDirection = (target.transform.position - transform.position).normalized;
+          
             OnRushAttack(destroyCancellationToken).Forget();
         }
 
         private async UniTask OnRushAttack(CancellationToken cancellation)
         {
+            if (!isEncount) // 不本意
+            {
+                attackEndEvent.Invoke();
+                return;
+            }
+               
             //攻撃予備動作
             await attackEffectSetter.OnAttackEffect(destroyCancellationToken);
 
