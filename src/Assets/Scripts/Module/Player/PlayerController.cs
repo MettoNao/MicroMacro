@@ -14,7 +14,7 @@ namespace Module.Player
     {
         [SerializeField] private PlayerParamater playerParamater;
         [SerializeField] private Image bulletState;
-        [SerializeField] private TextMeshProUGUI SpecialCountText;
+        [SerializeField] private TextMeshProUGUI SpecialCountText, HpText;
         [SerializeField] private Image redFlashImage;
 
         [SerializeField] private PlayerAimer playerAimer;
@@ -42,13 +42,15 @@ namespace Module.Player
             playerMover = new PlayerMover(rb, groundChecker, playerParamater);
             playerJumper = new PlayerJumper(rb, groundChecker, playerParamater);
 
+            HpText.text = $"hp:{hp}";
+
             InputBind();
         }
 
         private void InputBind()
         {
             map = playerInput.currentActionMap;
-            
+
             map["Move"].performed += MoveInput;
             map["Move"].canceled += MoveInputZero;
 
@@ -57,30 +59,39 @@ namespace Module.Player
             map["Jump"].performed += playerJumper.StartJump;
             map["Jump"].canceled += playerJumper.StopJump;
 
-            map["Fire"].performed += Fire;
+            map["LergeFire"].performed += LergeFire;
+            map["LergeFire"].canceled += playerShooter.CancelFire;
 
-            map["ChangeScale"].performed += ChangeScale;
+            map["MinimalizeFire"].performed += MinimalizeFire;
+            map["MinimalizeFire"].canceled += playerShooter.CancelFire;
         }
 
         void MoveInput(InputAction.CallbackContext ctx)
         {
             moveInput = new Vector3(ctx.ReadValue<Vector2>().x, 0, 0);
         }
-        
+
         void MoveInputZero(InputAction.CallbackContext callbackContext)
         {
             moveInput = Vector3.zero;
-        }
-
-        void Fire(InputAction.CallbackContext callbackContext)
-        {
-            playerShooter.FireBullet(isBigBullet);
         }
 
         void Aim(InputAction.CallbackContext context)
         {
             Direction = context.ReadValue<Vector2>().normalized;
             playerAimer.Aim(Direction);
+        }
+
+        private void LergeFire(InputAction.CallbackContext context)
+        {
+            ChangeScale(true);
+            playerShooter.FireBullet(isBigBullet);
+        }
+
+        private void MinimalizeFire(InputAction.CallbackContext context)
+        {
+            ChangeScale(false);
+            playerShooter.FireBullet(isBigBullet);
         }
 
         private void Update()
@@ -108,15 +119,15 @@ namespace Module.Player
             playerJumper.AddJump(dir, power);
         }
 
-        private void ChangeScale(InputAction.CallbackContext context)
+        private void ChangeScale(bool isBigBullet)
         {
-            isBigBullet = !isBigBullet;
+            this.isBigBullet = isBigBullet;
             bulletState.color = isBigBullet ? Color.red : Color.cyan;
             gunColor.material.color = bulletState.color;
             gunColor2.material.color = bulletState.color;
         }
 
-        int hp = 10;
+        int hp = 5;
         float flashTime = 0.3f;
         public void Death()
         {
@@ -127,6 +138,8 @@ namespace Module.Player
         {
             hp -= power;
             hp = hp <= 0 ? 0 : hp;
+
+            HpText.text = $"hp:{hp}";
 
             if (hp <= 0)
             {
@@ -158,8 +171,8 @@ namespace Module.Player
             map["Aim"].performed -= Aim;
             map["Jump"].performed -= playerJumper.StartJump;
             map["Jump"].canceled -= playerJumper.StopJump;
-            map["Fire"].performed -= Fire;
-            map["ChangeScale"].performed -= ChangeScale;
+            map["LergeFire"].performed -= LergeFire;
+            map["MinimalizeFire"].performed -= MinimalizeFire;
             map?.Dispose();
         }
     }

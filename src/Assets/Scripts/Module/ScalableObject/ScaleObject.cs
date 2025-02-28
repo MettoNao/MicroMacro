@@ -8,7 +8,18 @@ namespace Module.LevelItem
     public class ScaleObject : MonoBehaviour, InterfaceScalable
     {
         [SerializeField] private float maxScale, minScale;
+        [SerializeField] private float playerBouncePower = 50;
         private bool isScaleNow;
+
+        private Tweener tweener;
+        private Vector3 startLocalScale;
+        private float scale;
+
+        private void Start()
+        {
+            startLocalScale = transform.localScale;
+            scale = maxScale;
+        }
 
         public void OnScale(float addSclae)
         {
@@ -19,10 +30,15 @@ namespace Module.LevelItem
                 isScaleNow = true;
             }
 
-            transform.DOScale(transform.localScale + new Vector3(transform.localScale.x, transform.localScale.y, 0).normalized * addSclae, 0.6f)
+            scale += addSclae;
+
+            var toScale = startLocalScale * (scale / maxScale);
+            if (toScale.x <= minScale) toScale = Vector3.one * minScale;
+
+            tweener = transform.DOScale(toScale, 0.5f)
                 .SetEase(Ease.OutBounce, -0.3f)
                 .SetUpdate(true)
-                .OnComplete(() => isScaleNow = false);
+                .OnComplete(() => { isScaleNow = false; });
         }
 
         private void OnCollisionStay(Collision collision)
@@ -31,7 +47,7 @@ namespace Module.LevelItem
             if (collision.gameObject.CompareTag("Player"))
             {
                 PlayerController playerController = collision.gameObject.GetComponent<PlayerController>();
-                playerController.AddJump(-collision.GetContact(0).normal, 50);
+                playerController.AddJump(-collision.GetContact(0).normal, playerBouncePower);
                 isScaleNow = false;
             }
         }

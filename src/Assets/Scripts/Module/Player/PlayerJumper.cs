@@ -28,6 +28,8 @@ namespace Module.Player
 
         public void Jump()
         {
+            Debug.Log($"isAddingJump{isAddingJump}");
+
             //着地時にタイマーリセット
             if (groundChecker.CheckGroundedByTag())
             {
@@ -100,10 +102,10 @@ namespace Module.Player
         {
             rb.AddForce(dir * power, ForceMode.Impulse);
             isHoldingJump = false;
-            SetIsAddingJumpFlg().Forget();
+            SetIsAddingJumpFlg(new CancellationTokenSource().Token).Forget();
         }
 
-        private async UniTask SetIsAddingJumpFlg()
+        private async UniTask SetIsAddingJumpFlg(CancellationToken cancellation)
         {
             await UniTask.WaitForSeconds(0.1f);
             isAddingJump = true;

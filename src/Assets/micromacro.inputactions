@@ -24,7 +24,7 @@
                     "initialStateCheck": true
                 },
                 {
-                    "name": "Fire",
+                    "name": "LergeFire",
                     "type": "Button",
                     "id": "8e0d3ba4-32aa-4c76-af7e-03ee38b3663c",
                     "expectedControlType": "Button",
@@ -42,9 +42,9 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "ChangeScale",
+                    "name": "MinimalizeFire",
                     "type": "Button",
-                    "id": "6fd5b3a1-20de-4072-b779-f0c1ae941a30",
+                    "id": "5313dd98-42d3-4454-945e-1107739f3b74",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
@@ -213,7 +213,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": ";Gamepad",
-                    "action": "Fire",
+                    "action": "LergeFire",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -224,7 +224,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": ";Keyboard&Mouse",
-                    "action": "Fire",
+                    "action": "LergeFire",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -235,7 +235,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": ";Touch",
-                    "action": "Fire",
+                    "action": "LergeFire",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -246,7 +246,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "Joystick",
-                    "action": "Fire",
+                    "action": "LergeFire",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -257,7 +257,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "XR",
-                    "action": "Fire",
+                    "action": "LergeFire",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -285,23 +285,23 @@
                 },
                 {
                     "name": "",
-                    "id": "62628421-5a2c-4506-af68-048f7b0deeab",
-                    "path": "<Gamepad>/leftTrigger",
+                    "id": "b773da11-0432-4930-8778-aa631c7ae534",
+                    "path": "<Mouse>/rightButton",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
-                    "action": "ChangeScale",
+                    "groups": "Keyboard&Mouse",
+                    "action": "MinimalizeFire",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
                 {
                     "name": "",
-                    "id": "79b4bec7-1318-4207-b771-dd8a80f86ee7",
-                    "path": "<Keyboard>/z",
+                    "id": "477afeaa-3dc0-46ec-bfb7-5754d6d45409",
+                    "path": "<Gamepad>/rightShoulder",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
-                    "action": "ChangeScale",
+                    "groups": "Gamepad",
+                    "action": "MinimalizeFire",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
