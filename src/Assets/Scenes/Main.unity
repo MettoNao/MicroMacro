@@ -554,8 +554,8 @@ Transform:
   m_GameObject: {fileID: 93080047}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 87.6073, y: 13.67, z: 0}
-  m_LocalScale: {x: 13.375081, y: 0.9471, z: 1}
+  m_LocalPosition: {x: 87.605, y: 17.41, z: 0}
+  m_LocalScale: {x: 13.36973, y: 0.9471, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1219130187}
@@ -689,11 +689,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9110248445583182768, guid: a1a392608d8724fc98d2256aa12dcc90, type: 3}
       propertyPath: maxAttackInterval
-      value: 2
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 9110248445583182768, guid: a1a392608d8724fc98d2256aa12dcc90, type: 3}
       propertyPath: minAttackInterval
-      value: 1
+      value: 4
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -2835,11 +2835,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9110248445583182768, guid: a1a392608d8724fc98d2256aa12dcc90, type: 3}
       propertyPath: maxAttackInterval
-      value: 5
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 9110248445583182768, guid: a1a392608d8724fc98d2256aa12dcc90, type: 3}
       propertyPath: minAttackInterval
-      value: 3
+      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -2911,11 +2911,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9110248445583182768, guid: 8459a1f23f74bdb4bb9baa8cd43f702f, type: 3}
       propertyPath: maxAttackInterval
-      value: 2
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 9110248445583182768, guid: 8459a1f23f74bdb4bb9baa8cd43f702f, type: 3}
       propertyPath: minAttackInterval
-      value: 1
+      value: 3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -4454,8 +4454,8 @@ Transform:
   m_GameObject: {fileID: 1325537995}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 25.4, y: 36.99, z: 0}
-  m_LocalScale: {x: 1, y: 4.1115537, z: 1}
+  m_LocalPosition: {x: 25.4, y: 44.5615, z: 0}
+  m_LocalScale: {x: 1, y: 19.254818, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 240470148}
@@ -4601,11 +4601,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9110248445583182768, guid: 8459a1f23f74bdb4bb9baa8cd43f702f, type: 3}
       propertyPath: maxAttackInterval
-      value: 2
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 9110248445583182768, guid: 8459a1f23f74bdb4bb9baa8cd43f702f, type: 3}
       propertyPath: minAttackInterval
-      value: 1
+      value: 3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -4723,7 +4723,7 @@ Transform:
   m_GameObject: {fileID: 1366194413}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 61.28, y: -13.46, z: 0}
+  m_LocalPosition: {x: 61.28, y: -9.72, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -5974,8 +5974,8 @@ Transform:
   m_GameObject: {fileID: 1743004284}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: 0.7071068, w: 0.7071068}
-  m_LocalPosition: {x: 96.9438, y: 22.514, z: 0}
-  m_LocalScale: {x: 10.219996, y: 5.3125806, z: 1}
+  m_LocalPosition: {x: 96.9438, y: 22.2792, z: 0}
+  m_LocalScale: {x: 10.690307, y: 5.3125806, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1219130187}
@@ -6394,7 +6394,7 @@ Transform:
   m_GameObject: {fileID: 1830819356}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 18.002281, y: -6.4, z: 0.6437584}
+  m_LocalPosition: {x: 18.002281, y: -2.6600003, z: 0.6437584}
   m_LocalScale: {x: 4.284102, y: 1.3942038, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

@@ -7,6 +7,7 @@ using Module.Utile;
 using Cysharp.Threading.Tasks;
 using System;
 using System.Threading;
+using Module.ScalableObject;
 
 namespace Module.Player
 {
@@ -22,6 +23,7 @@ namespace Module.Player
         [SerializeField] private GroundChecker groundChecker;
 
         [SerializeField] private MeshRenderer gunColor, gunColor2;
+        [SerializeField] private AutoAimer autoAimer;
 
         private PlayerMover playerMover;
         private PlayerJumper playerJumper;
@@ -31,6 +33,7 @@ namespace Module.Player
         private PlayerInput playerInput;
 
         private bool isBigBullet = true;
+        private bool isManualAiming;
         InputActionMap map;
         public Vector2 Direction { get; set; }
 
@@ -55,6 +58,9 @@ namespace Module.Player
             map["Move"].canceled += MoveInputZero;
 
             map["Aim"].performed += Aim;
+            map["Aim"].canceled += AimCancel;
+            map["AimTrigger"].performed += AimTrigger;
+            map["AimTrigger"].canceled += AimCancel;
 
             map["Jump"].performed += playerJumper.StartJump;
             map["Jump"].canceled += playerJumper.StopJump;
@@ -68,18 +74,37 @@ namespace Module.Player
 
         void MoveInput(InputAction.CallbackContext ctx)
         {
-            moveInput = new Vector3(ctx.ReadValue<Vector2>().x, 0, 0);
+            if (isManualAiming)
+            {
+                moveInput = Vector3.zero;
+                Direction = ctx.ReadValue<Vector2>().normalized;
+                playerAimer.Aim(Direction);
+            }
+            else
+            {
+                moveInput = new Vector3(ctx.ReadValue<Vector2>().x, 0, 0);
+            }
         }
 
         void MoveInputZero(InputAction.CallbackContext callbackContext)
         {
             moveInput = Vector3.zero;
         }
+        void AimTrigger(InputAction.CallbackContext context)
+        {
+            isManualAiming = true;
+        }
 
         void Aim(InputAction.CallbackContext context)
         {
+            isManualAiming = true;
             Direction = context.ReadValue<Vector2>().normalized;
             playerAimer.Aim(Direction);
+        }
+
+        void AimCancel(InputAction.CallbackContext context)
+        {
+            isManualAiming = false;
         }
 
         private void LergeFire(InputAction.CallbackContext context)
@@ -105,6 +130,12 @@ namespace Module.Player
             {
                 map?.Dispose();
                 SceneManager.LoadScene("Title");
+            }
+
+            var obj = autoAimer.GetNearestScalableObject();
+            if (obj != null && !isManualAiming)
+            {
+                playerAimer.Aim(obj.transform.position - transform.position);
             }
         }
 
@@ -169,6 +200,7 @@ namespace Module.Player
             map["Move"].performed -= MoveInput;
             map["Move"].canceled -= MoveInputZero;
             map["Aim"].performed -= Aim;
+            map["Aim"].canceled -= AimCancel;
             map["Jump"].performed -= playerJumper.StartJump;
             map["Jump"].canceled -= playerJumper.StopJump;
             map["LergeFire"].performed -= LergeFire;

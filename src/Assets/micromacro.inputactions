@@ -49,6 +49,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "AimTrigger",
+                    "type": "Button",
+                    "id": "cf433e38-a86c-458c-b97e-f3f44b88b8b3",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -275,7 +284,7 @@
                 {
                     "name": "",
                     "id": "334aee88-9fff-44f5-8fbb-f8540469ac33",
-                    "path": "<Gamepad>/leftShoulder",
+                    "path": "<Gamepad>/buttonSouth",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -286,7 +295,18 @@
                 {
                     "name": "",
                     "id": "b773da11-0432-4930-8778-aa631c7ae534",
-                    "path": "<Mouse>/rightButton",
+                    "path": "<Gamepad>/leftTrigger",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Gamepad",
+                    "action": "MinimalizeFire",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "477afeaa-3dc0-46ec-bfb7-5754d6d45409",
+                    "path": "<Mouse>/leftButton",
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard&Mouse",
@@ -296,12 +316,12 @@
                 },
                 {
                     "name": "",
-                    "id": "477afeaa-3dc0-46ec-bfb7-5754d6d45409",
-                    "path": "<Gamepad>/rightShoulder",
+                    "id": "ee01b4ab-3c11-4f3d-8f60-cfae1a82d0ba",
+                    "path": "<Gamepad>/buttonWest",
                     "interactions": "",
                     "processors": "",
                     "groups": "Gamepad",
-                    "action": "MinimalizeFire",
+                    "action": "AimTrigger",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
